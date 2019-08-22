@@ -35,7 +35,7 @@ public class PostHandler implements HttpHandler {
         String response = "Message received.";
         he.sendResponseHeaders(200, response.length());
         OutputStream os = he.getResponseBody();
-        os.write(response.toString().getBytes());
+        os.write(response.getBytes());
         os.close();
     }
 }
