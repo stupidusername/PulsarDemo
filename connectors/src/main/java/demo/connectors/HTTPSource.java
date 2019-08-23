@@ -15,18 +15,18 @@ public class HTTPSource extends PushSource<String> {
 
     @Override
     public void open(Map<String, Object> config, SourceContext sourceContext) throws Exception {
-        this.server = HttpServer.create(new InetSocketAddress(8000), 0);
-        this.server.createContext("/message", new PostHandler(this::sendString));
-        this.server.start();
+        server = HttpServer.create(new InetSocketAddress(8000), 0);
+        server.createContext("/message", new PostHandler(this::sendString));
+        server.start();
     }
 
     @Override
     public void close() throws Exception {
-        this.server.stop(0);
+        server.stop(0);
     }
 
 
     private void sendString(String content) {
-        this.consume(new Message(content));
+        consume(new Message(content));
     }
 }

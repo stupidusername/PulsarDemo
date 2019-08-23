@@ -1,46 +1,59 @@
 package demo.connectors;
 
-import com.sun.net.httpserver.HttpServer;
-import demo.handlers.GetHandler;
 import org.apache.pulsar.functions.api.Record;
 import org.apache.pulsar.io.core.Sink;
 import org.apache.pulsar.io.core.SinkContext;
 
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class HTTPSink implements Sink<String> {
 
-    private HttpServer server;
-    private ArrayList<String> messages = new ArrayList<>();
-
     @Override
     public void open(Map<String, Object> config, SinkContext sinkContext) throws Exception {
-        this.server = HttpServer.create(new InetSocketAddress(8008), 0);
-        this.server.createContext("/read", new GetHandler(this::getReadContent));
-        this.server.start();
+        // Do nothing.
     }
 
     @Override
     public void close() throws Exception {
-        this.server.stop(0);
+        // Do nothing.
     }
 
     @Override
     public void write(Record<String> record) throws Exception {
-        messages.add(record.getValue());
-        record.ack();
+        String messageContent = record.getValue();
+        try {
+            post("http://web:5000/message", messageContent);
+            record.ack();
+        } catch (IOException e) {
+            record.fail();
+        }
     }
 
-    private String getReadContent() {
-        StringBuilder content = new StringBuilder("<html><head><title>Messages</title></head><body><ol>");
-        content.append("</ol></body></html>");
-        for (String message : messages) {
-            content.append("<li>").append(message).append("</li>");
+    private static String post(String url, String data) throws IOException {
+        // Create connection.
+        HttpURLConnection urlConn;
+        URL mUrl = new URL(url);
+        urlConn = (HttpURLConnection) mUrl.openConnection();
+        urlConn.setDoOutput(true);
+        // Send request body.
+        if (data != null) {
+            urlConn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+            urlConn.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
         }
-        // Empty list.
-        messages = new ArrayList<>();
-        return content.toString();
+        // Get response content.
+        BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(), StandardCharsets.UTF_8));
+        StringBuilder response = new StringBuilder();
+        String responseLine = null;
+        while ((responseLine = br.readLine()) != null) {
+            response.append(responseLine.trim());
+        }
+        return response.toString();
     }
 }

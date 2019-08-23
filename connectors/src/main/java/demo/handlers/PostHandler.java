@@ -29,7 +29,7 @@ public class PostHandler implements HttpHandler {
         String content = br.lines().collect(Collectors.joining());
 
         // Run the callback method.
-        this.callback.run(content);
+        callback.run(content);
 
         // Send response.
         String response = "Message received.";
