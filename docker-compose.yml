@@ -1,13 +1,14 @@
 version: '3'
 services:
         pulsar:
-                image: apachepulsar/pulsar:2.4.0
+                build: ./pulsar
                 ports:
                         - 6650:6650
                         - 8000:8000
                         - 8080:8080
                 volumes:
                         - ./data:/pulsar/data
+                        - ./connectors-dist:/connectors-dist
                 command: ["bin/pulsar", "standalone"]
         web:
                 build: ./web
