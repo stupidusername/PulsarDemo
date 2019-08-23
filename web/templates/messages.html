@@ -1,0 +1,18 @@
+<!doctype html>
+
+<title>Messages</title>
+
+<script type="text/javascript">
+    window.onload = function() {
+        window.scrollTo(0, document.body.scrollHeight);
+        setTimeout(function() {
+            location.reload();
+        }, 10000);
+    };
+</script>
+
+<ol>
+{% for message in messages %}
+    <li>{{message}}</li>
+{% endfor %}
+</ol>
