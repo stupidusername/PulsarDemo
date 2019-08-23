@@ -5,7 +5,6 @@ services:
                 ports:
                         - 6650:6650
                         - 8000:8000
-                        - 8008:8008
                         - 8080:8080
                 volumes:
                         - ./data:/pulsar/data
