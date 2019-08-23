@@ -10,3 +10,7 @@ services:
                 volumes:
                         - ./data:/pulsar/data
                 command: ["bin/pulsar", "standalone"]
+        web:
+                build: .
+                ports:
+                        - 5000:5000
