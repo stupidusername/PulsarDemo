@@ -11,6 +11,6 @@ services:
                         - ./data:/pulsar/data
                 command: ["bin/pulsar", "standalone"]
         web:
-                build: .
+                build: ./web
                 ports:
                         - 5000:5000

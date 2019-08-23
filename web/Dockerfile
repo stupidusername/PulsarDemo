@@ -3,7 +3,7 @@ FROM python:3.7-alpine
 # Add Tini.
 RUN apk add --update tini
 
-COPY ./web /app
+COPY . /app
 WORKDIR /app
 
 RUN pip install -r requirements.txt
